@@ -1,44 +1,119 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Selectors proposal
 
-## Available Scripts
+`npm i & npm start`
 
-In the project directory, you can run:
+The goal of this small prototype is to create a proposal set of guidelines and best practices when designing and writing Redux selectors.
 
-### `npm start`
+# Proposed guidelines
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+-   [Files and Folder Structure](#Files-and-Folder-Structure)
+-   [Selectors State](#Selectors-State)
+-   [Selectors with Props](#Selectors-with-Props)
+-   [Selector Computing Derived Data](#Selector-Computing-Derived-Data)
+-   [Selector Computing Derived Data with Props](#Selector-Computing-Derived-Data-with-Props)
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+<a name="Files-and-Folder-Structure"></a>
 
-### `npm test`
+## Files and Folder Structure
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Every Reducer file must have an equivalent Selector file.
 
-### `npm run build`
+Selectors must follow Reducers folder structure.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![Folder Structure](docs/folder-structure.png 'Folder Structure').
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+<a name="Selectors-State"></a>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Selectors State
 
-### `npm run eject`
+Every Selector must receive the entire state.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+It is Selector responsibility to retrieve its own context (e.g. using upper level selector).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```javascript
+import { get } from 'lodash';
+import { getUi } from '../rootSelectors';
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+export const getColor = state => get(getUi(state), 'color');
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<a name="Selectors-with-Props"></a>
 
-## Learn More
+## Selectors with Props
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Optionally, Selectors may receive props.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+If so, selectors must receive after state, an object with all required props (as its second argument),
+
+```javascript
+import { getResults } from '../rootSelectors';
+
+export const getColor = (state, { id }) => getResults(state)[id];
+```
+
+<a name="Selector-Computing-Derived-Data"></a>
+
+## Selector Computing Derived Data
+
+If a Selector is needed to compute derived data from the state, `createSelector` from [Reselect](https://github.com/reduxjs/reselect) must be used.
+
+Input Selectors must always be Selectors that only access the state and never Selectors that compute derived data.
+
+Input Selectors must not be defined inline.
+
+Result Function may be defined inline.
+
+Input Selectors array notation must be preferred over comma separated notation.
+
+Full documentation [here](https://github.com/reduxjs/reselect#createselectorinputselectors--inputselectors-resultfunc)
+
+```javascript
+import { createSelector } from 'reselect';
+import { getResults } from '../rootSelectors';
+
+export const getAllGenders = createSelector(
+    [getResults],
+    results => Array.from(new Set(results.map(result => result.gender)))
+);
+```
+
+<a name="Selector-Computing-Derived-Data-with-Props"></a>
+
+## Selector Computing Derived Data with Props
+
+If a Selector computing derived data needs Props, they must be passed as Selectors second argument.
+
+`createSelector` will automatically send the Props to the Input Selectors.
+
+If the Result Function needs any Prop to compute derived data, fake Selectors must be created in order to send the props to the Result Function.
+
+Fake Selectors must be defined inline and the Props sent to the Result Function must always be [primitive values](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types).
+
+If a Selector Computing Derived Data needs to receive Props chances are it will be executed with different Prop values. In order to properly use `reselect` memoization.
+
+`make...Selector` function must be created that returns a new instance of a Selector created with `createSelector`.
+
+Each Component must create a `makeMapStateToProps` function that creates its own instance of the Selector and return the `mapToStateProps` function.
+
+Selector:
+
+```javascript
+export const makeGetGenderResults = () =>
+    createSelector(
+        [getResults, (_, { gender }) => gender],
+        (results, gender) => results.filter(result => result.gender === gender);
+    );
+```
+
+Component:
+
+```javascript
+const makeMapStateToProps = () => {
+    const getGenderResults = makeGetGenderResults();
+    return (state, ownProps) => ({
+        results: getGenderResults(state, { gender: ownProps.type })
+    });
+};
+
+export default connect(makeMapStateToProps)(React.Component);
+```
