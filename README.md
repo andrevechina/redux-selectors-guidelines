@@ -100,7 +100,7 @@ Fake Selectors must be defined inline and the Props sent to the Result Function 
 
 If a Selector Computing Derived Data needs to receive Props chances are it will be executed with different Prop values. In order to properly use `reselect` memoization a `make...Selector` function must be created that returns a new instance of a Selector created with `createSelector`.
 
-Each Component must create a `makeMapStateToProps` function that creates its own instance of the Selector and return the `mapToStateProps` function.
+Each Component must create a `makeMapStateToProps` function that creates its own instance of the Selector and returns the `mapToStateProps` function.
 
 Selector:
 
