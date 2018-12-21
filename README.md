@@ -48,7 +48,7 @@ If so, selectors must receive after state, an object with all required props (as
 ```javascript
 import { getResults } from '../rootSelectors';
 
-export const getColor = (state, { id }) => getResults(state)[id];
+export const getResult = (state, { id }) => getResults(state)[id];
 ```
 
 <a name="Selector-Computing-Derived-Data"></a>
