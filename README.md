@@ -20,7 +20,7 @@ Every Reducer file must have an equivalent Selector file.
 
 Selectors must be found inside Reducers folder.
 
-![Folder Structure](docs/folder-structure.png 'Folder Structure').
+<img src="docs/folder-structure.png" height="200px">
 
 <a name="Selectors-State"></a>
 
