@@ -18,7 +18,7 @@ The goal of this small prototype is to create a proposal set of guidelines and b
 
 Every Reducer file must have an equivalent Selector file.
 
-Selectors must follow Reducers folder structure.
+Selectors must be found inside Reducers folder.
 
 ![Folder Structure](docs/folder-structure.png 'Folder Structure').
 
@@ -65,7 +65,7 @@ Input Selectors output is sent as input to the Result Function.
 
 A shallow compare is executed over Input Selectors outputs and the Result Function will only get executed if one of its inputs change.
 
-Input Selectors must always be Selectors that only access the state and never Selectors that compute derived data.
+Input Selectors must always be Selectors that only access the state or Selectors that compute derived data created with `createSelector`s.
 
 Input Selectors must not be defined inline.
 
