@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { upperFirst } from 'lodash';
-import { makeGetGenderResults } from '../selectors/results/resultsSelectors';
-import { getColor } from '../selectors/ui/uiSelectors';
+import { makeGetGenderResults } from '../reducers/results/resultsSelectors';
+import { getColor } from '../reducers/ui/uiSelectors';
 import Person from './Person';
 
 const People = props => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getAllGenders } from '../selectors/results/resultsSelectors';
+import { getAllGenders } from '../reducers/results/resultsSelectors';
 import '../styles/app.css';
 import ChangeColor from './ChangeColor';
 import People from './People';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getColor } from '../selectors/ui/uiSelectors';
+import { getColor } from '../reducers/ui/uiSelectors';
 import { changeColor } from '../actions/uiActions';
 
 const colors = ['red', 'black', 'blue', 'purple', 'green', 'tomato', 'peru'];
