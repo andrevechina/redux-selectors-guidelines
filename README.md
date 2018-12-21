@@ -9,6 +9,7 @@ The goal of this small prototype is to create a proposal set of guidelines and b
 -   [Files and Folder Structure](#Files-and-Folder-Structure)
 -   [Selectors State](#Selectors-State)
 -   [Selectors with Props](#Selectors-with-Props)
+-   [Selectors default values](#Selectors-default-values)
 -   [Selector Computing Derived Data](#Selector-Computing-Derived-Data)
 -   [Selector Computing Derived Data with Props](#Selector-Computing-Derived-Data-with-Props)
 
@@ -50,6 +51,21 @@ import { getResults } from '../rootSelectors';
 
 export const getResult = (state, { id }) => getResults(state)[id];
 ```
+
+<a name="Selectors-default-values"></a>
+
+## Selectors default values
+
+Whenever possible, default values should be defined in the application state using Reducers `defaultState`s.
+
+Selectors should not return default values that are not [primitive values](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types).
+
+```javascript
+// DO NOT!
+export const getResults = state => get(state, 'results', []);
+```
+
+If a non primitive default value is required, `defaultProps` should be used instead.
 
 <a name="Selector-Computing-Derived-Data"></a>
 
