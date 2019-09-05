@@ -71,7 +71,7 @@ If a non primitive default value is required, `defaultProps` should be used inst
 
 ## Selector Computing Derived Data
 
-If a Selector is needed to compute derived data from the state, `createSelector` from [Reselect](https://github.com/reduxjs/reselect) must be used.
+If a Selector is needed to compute derived data from the state, `createSelector` from [React Starter Kit](https://redux-starter-kit.js.org/api/createselector) must be used.
 
 `createSelector` receives a list of Input Selectors and a Result Function.
 
@@ -89,11 +89,11 @@ Result Function may be defined inline.
 
 Input Selectors array notation must be preferred over comma separated notation.
 
-Full documentation [here](https://github.com/reduxjs/reselect#createselectorinputselectors--inputselectors-resultfunc)
+Full documentation [here](https://github.com/planttheidea/selectorator#usage)
 
 ```javascript
 import { uniq } from 'lodash';
-import { createSelector } from 'reselect';
+import { createSelector } from 'redux-starter-kit';
 import { getResults } from '../rootSelectors';
 
 export const getAllGenders = createSelector(
